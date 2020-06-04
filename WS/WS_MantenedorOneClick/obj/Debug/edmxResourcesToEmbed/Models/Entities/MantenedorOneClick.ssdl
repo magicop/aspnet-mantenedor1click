@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MantenedorOneClickModel.Store" Provider="Oracle.ManagedDataAccess.Client" ProviderManifestToken="11.2" Alias="Self" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <Function Name="PKG_MANTENEDOR_1CLICK_ACTIVARESTADO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.ACTIVARESTADO">
+    <Parameter Name="AFILRUT" Type="varchar2" Mode="In" />
+    <Parameter Name="CODPRODUCTO" Type="number" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_AGREGARPRODUCTO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.AGREGARPRODUCTO">
+    <Parameter Name="CODPRODUCTO" Type="number" Mode="In" />
+    <Parameter Name="NOMBRE" Type="varchar2" Mode="In" />
+    <Parameter Name="FECHAINICIO" Type="date" Mode="In" />
+    <Parameter Name="ISAPRE" Type="varchar2" Mode="In" />
+    <Parameter Name="USUARIOCREADOR" Type="varchar2" Mode="In" />
+    <Parameter Name="VALOR" Type="number" Mode="In" />
+    <Parameter Name="BENEFICIARIO" Type="varchar2" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOCOD" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.BUSCARPRODUCTOCOD">
+    <Parameter Name="CODPRODUCTO" Type="number" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.BUSCARPRODUCTOS">
+    <Parameter Name="AFILRUT" Type="varchar2" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_CAMBIARPRODUCTO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.CAMBIARPRODUCTO">
+    <Parameter Name="CODPRODOLD" Type="number" Mode="In" />
+    <Parameter Name="CODPRODNEW" Type="number" Mode="In" />
+    <Parameter Name="ISAPRE" Type="varchar2" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_EDITARPRODUCTO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.EDITARPRODUCTO">
+    <Parameter Name="CODPRODUCTO" Type="number" Mode="In" />
+    <Parameter Name="ISAPRE" Type="varchar2" Mode="In" />
+    <Parameter Name="NOMBRE" Type="varchar2" Mode="In" />
+    <Parameter Name="ESTADO" Type="varchar2" Mode="In" />
+    <Parameter Name="VALOR" Type="number" Mode="In" />
+    <Parameter Name="BENEFICIARIO" Type="varchar2" Mode="In" />
+    <Parameter Name="CONFIRMACION" Type="number" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_LISTARPRODUCTOS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.LISTARPRODUCTOS">
+    <Parameter Name="ISAPRE" Type="varchar2" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_NUEVASECUENCIA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.NUEVASECUENCIA" ReturnType="number">
+    <Parameter Name="COD" Type="number" Mode="In" />
+  </Function>
+  <Function Name="PKG_MANTENEDOR_1CLICK_TERMINARVIGENCIA" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="MANTENEDORESWEB" StoreFunctionName="PKG_MANTENEDOR_1CLICK.TERMINARVIGENCIA">
+    <Parameter Name="CODPRODUCTO" Type="number" Mode="In" />
+    <Parameter Name="ISAPRE" Type="varchar2" Mode="In" />
+    <Parameter Name="OCOD_ERROR" Type="varchar2" Mode="Out" />
+    <Parameter Name="OMSG_ERROR" Type="varchar2" Mode="Out" />
+  </Function>
+  <EntityContainer Name="MantenedorOneClickModelStoreContainer" />
+</Schema>

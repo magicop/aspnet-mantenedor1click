@@ -1,0 +1,35 @@
+﻿@model WebMantenedorOneClick.Models.DTO.ProductoOc
+
+
+<div class="container">
+
+    <center><h1>Buscar Producto</h1></center>
+    <br>
+
+    @using (Html.BeginForm("Buscar", "Producto", FormMethod.Get, new { id = "FormBuscarProducto" }))
+    {
+        <div class="form-row">
+
+            <div class="form-group col-md-6">
+                <label>Código del producto</label>
+                @Html.TextBoxFor(model => model.codigo, new { @class = "form-control", placeholder = "Ingrese el código del producto", @type = "number" })
+            </div>
+
+            <div class="form-group col-md-6">
+                <center>
+                    <br>
+
+                    <button type="submit" name="btnBuscar" id="btnBuscar" class="btn btn-outline-danger btn-lg">Buscar</button>
+
+                    <button type="reset" class="btn btn-outline-danger btn-lg" onclick="limpiarFormulario()" value="Limpiar">Limpiar</button>
+
+                </center>
+            </div>
+
+        </div>
+
+        
+    }
+
+
+</div>

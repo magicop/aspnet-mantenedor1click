@@ -1,0 +1,85 @@
+﻿@model List<WebMantenedorOneClick.Models.DTO.Producto>
+
+
+
+<br />
+<center><h1>Listado de Productos</h1></center>
+<br />
+
+
+@{ if (Model.Count() > 0)
+
+    {
+        <table id="TblSolicitudes" class="table display nowrap table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Rut Afil</th>
+                    <th scope="col">Nombre Afil</th>
+                    <th scope="col">Isapre Afil</th>
+                    <th scope="col">Código prod</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Folio</th>
+                    <th scope="col">Fecha Compra</th>
+                    <th scope="col">Cargas</th>
+                    <th scope="col">Visualizaciones</th>
+                    <th scope="col">*</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var producto in Model)
+                {
+                    <tr>
+                        <td>@producto.rutAfiliado</td>
+                        <td>@producto.nombreAfiliado</td>
+
+                        @if (@producto.isapreAfiliado == "B")
+                        {
+                            <td>Banmédica</td>
+                        }
+                        else
+                        {
+                            <td>Vida Tres</td>
+                        }
+
+                        <td>@producto.codigoProducto</td>
+                        <td>@producto.estado</td>
+                        <td>@producto.folio</td>
+                        <td>@producto.fechaCompra</td>
+                        <td>@producto.cargas</td>
+                        <td>@producto.visualizaciones</td>
+
+                        @if (@producto.visualizaciones == 4 && @producto.estado == "No activo")
+                        {
+                            <td>
+                                <a href="@Url.Action("ActivarEstado", "MantenedorOc", new { rutAfiliado = @producto.rutAfiliado, codProducto = @producto.codigoProducto })">
+                                    <i class="far fa-edit" data-toggle="tooltip" data-placement="top" title="Activar"></i>
+                                </a>  
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+
+
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <br />
+        <h3 style="color:red;">No se han encontrado productos relacionados al rut ingresado.</h3>
+
+        <br />
+        <center>
+            <a href="@Url.Action("FormBuscar", "MantenedorOc")">
+                <i class="btn btn-outline-danger btn-lg" value="Volver al menú">Volver al menú</i>
+            </a>
+        </center>
+    }
+
+}

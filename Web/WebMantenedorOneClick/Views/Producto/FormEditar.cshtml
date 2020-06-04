@@ -1,0 +1,55 @@
+﻿@model WebMantenedorOneClick.Models.DTO.ProductoOc
+
+
+
+<div class="container">
+
+    <center><h1>Editar producto : <strong style="color:red;">@Html.DisplayFor(model => model.codigo) </strong></h1></center>
+    <br>
+
+    @using (Html.BeginForm("Editar", "Producto", FormMethod.Post, new { id = "editarProducto" }))
+    {
+        @Html.HiddenFor(model => model.codigo)
+        @Html.HiddenFor(model => model.isapre)
+        @Html.HiddenFor(model => model.confirmo)
+        <div class="form-row">
+
+            <div class="form-group col-md-6">
+                <label>Nombre</label>
+                @Html.TextBoxFor(model => model.nombre, new { @class = "form-control"})
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Estado</label>
+                @Html.DropDownListFor(model => model.estado,
+                   new SelectList(Model.LstEstados, "Value", "Text"), "Selecciona el estado",
+                   new { @class = "form-control" })
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Valor</label>
+                @Html.HiddenFor(model => model.newValor)
+                @Html.TextBoxFor(model => model.valor, new { @class = "form-control", placeholder = "Ingrese el valor individual del producto" })
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Beneficiario</label>
+                @Html.DropDownListFor(model => model.beneficiario,
+                   new SelectList(Model.LstBeneficiarios, "Value", "Text"), "Selecciona el beneficiario",
+                   new { @class = "form-control" })
+            </div>
+
+        </div>
+
+        <center>
+            <br>
+
+            <button type="submit" id="btnEditar" name="btnEditar" class="btn btn-outline-danger btn-lg">Editar</button>
+
+            <button type="reset" class="btn btn-outline-danger btn-lg" onclick="limpiarFormulario()" value="Limpiar">Limpiar</button>
+
+        </center>
+    }
+
+
+</div>

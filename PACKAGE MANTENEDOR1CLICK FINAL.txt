@@ -1,0 +1,355 @@
+create or replace PACKAGE PKG_MANTENEDOR_1CLICK AS 
+
+    TYPE cursor_productos IS REF CURSOR;
+    
+    FUNCTION nuevaSecuencia(cod IN number) return number;
+    
+    -- WEB_PRODUCTOS_1CLIK
+    PROCEDURE buscarProductos(afilrut IN varchar2, c_productos OUT cursor_productos, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2);
+    PROCEDURE activarEstado(afilrut IN varchar2, codProducto IN number, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2);
+    PROCEDURE cambiarProducto(codprodold IN number, codprodnew IN number, isapre IN varchar2, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2);
+    
+    -- PRODUCTOS_1CLICK
+    PROCEDURE buscarProductoCod(codproducto IN number, c_productos OUT cursor_productos, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2);
+    PROCEDURE agregarProducto(codproducto IN number, nombre IN varchar2, fechaInicio IN Date, isapre IN varchar2, usuarioCreador IN varchar2, valor IN number, beneficiario IN varchar2, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2);
+    PROCEDURE editarProducto(codproducto IN number, isapre IN varchar2, nombre IN varchar2, estado IN varchar2, valor IN number, beneficiario IN varchar2, confirmacion IN number, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2);
+    PROCEDURE terminarVigencia(codproducto IN number, isapre IN varchar2, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2);
+    PROCEDURE listarProductos(isapre IN varchar2, c_productos OUT cursor_productos, oCOD_ERROR OUT varchar2, oMSG_ERROR OUT varchar2);
+    
+
+END PKG_MANTENEDOR_1CLICK;
+
+-----------------------------------------
+
+create or replace PACKAGE BODY PKG_MANTENEDOR_1CLICK AS
+
+    FUNCTION nuevaSecuencia(cod IN number) return number
+    as
+    retorno number;
+    begin
+        
+        select max(prd_idproducto) + 1
+        into retorno 
+        from productos_1click;
+        
+        return retorno;
+        
+    exception 
+        when others then
+            return -1;    
+    end;
+    
+
+    PROCEDURE buscarProductos(afilrut IN varchar2, c_productos OUT cursor_productos, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2)
+    as
+    begin
+    
+        oCOD_ERROR := '0';
+		oMSG_ERROR := 'OK';
+    
+        OPEN c_productos FOR
+            select wp.afil_nrut as rutafiliado,
+               af.afil_tnombres || ' ' || af.afil_tapellido_paterno || ' ' || af.afil_tapellido_materno as nombreafiliado,
+               wp.isap_cempresa as isapre,
+               wp.wp1c_producto as codigoproducto,
+               DECODE (wp.WP1C_compro, 0, 'Activo',
+                        1, 'No activo', 
+                        'No cumple las condiciones') as estado,
+               nvl(wp.DOLE_LFOLIO, 0) as folio,
+               wp.WP1C_FECHA_COMPRO as fechacompra,
+               nvl(wp.WP1C_CARGAS, 0) as cargas,
+               wp.WP1C_MARCAVISTO as visualizaciones
+            from web_productos_1clik wp
+            join afiliados af
+            on wp.afil_nrut = af.afil_nrut and wp.isap_cempresa = af.isap_cempresa
+            where wp.afil_nrut = afilrut
+            and af.afil_xestado = 'V';
+            --where (wp.afil_nrut = afilrut OR nvl(afilrut, 0) = 0)
+            --and (wp.isap_cempresa = isapre OR nvl(isapre, '') = '')
+            --and (wp.wplc_producto = producto OR nvl(producto, 0) = 0)
+            --and (wp.wp1c_estado_proc_fun = estado OR nvl(estado, 0) = 0)
+            --and (wp.dole_lfolio = folio OR nvl(folio, 0) = 0)
+            --and (wp.wp1c_fecha_compro = fechacompra OR nvl(fechacompra, 0) = 0)
+            --and (wp.wp1c_cargas = cargas OR nvl(cargas, 0) = 0)
+            --and (wp.wp1c_marcavisto = visualizaciones OR nvl(visualizaciones, 0) = 0);
+            
+        IF C_PRODUCTOS%NOTFOUND THEN
+          RAISE NO_DATA_FOUND;
+        END IF;
+            
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(afilrut, 'MWEB', 'PRODUCTOS', 'buscarProductos', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN VALUE_ERROR THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'El valor ingresado no cumple con los requisitos específicos.';
+				spLog_INS(afilrut, 'MWEB', 'PRODUCTOS', 'buscarProductos', 'VALUE_ERROR', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(afilrut, 'MWEB', 'PRODUCTOS', 'buscarProductos', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+                
+    end buscarProductos;
+    
+    PROCEDURE buscarProductoCod(codproducto IN number, c_productos OUT cursor_productos, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2)
+    as
+    begin
+    
+        oCOD_ERROR := '0';
+		oMSG_ERROR := 'OK';
+    
+        OPEN c_productos FOR
+            select prd_idproducto as idproducto,
+                   prd_codproducto as codproducto,
+                   prd_nombreproducto as nombreproducto,
+                   prd_fechainicio as fechainicio,
+                   prd_fechatermino as fechatermino,
+                   prd_estado as estado,
+                   prd_isapempresa as isapre,
+                   prd_usuariocreador as usuariocreador,
+                   prd_valorindividual as valor,
+                   prd_beneficiario as beneficiario
+            from productos_1click
+            where prd_codproducto = codproducto;
+            
+        IF C_PRODUCTOS%NOTFOUND THEN
+          RAISE NO_DATA_FOUND;
+        END IF;
+            
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'buscarProductosCod', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN VALUE_ERROR THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+                oMSG_ERROR := 'El valor ingresado no cumple con los requisitos específicos.';
+                spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'buscarProductosCod', 'VALUE_ERROR', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'buscarProductosCod', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+                
+    end buscarProductoCod;
+    
+    PROCEDURE agregarProducto(codproducto IN number, nombre IN varchar2, fechaInicio IN Date, isapre IN varchar2, usuarioCreador IN varchar2, valor IN number, beneficiario IN varchar2, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2)
+    as
+    begin
+        oCOD_ERROR := '0';
+		oMSG_ERROR := 'OK';
+        
+        INSERT INTO productos_1click
+        (
+           prd_idProducto,
+           prd_codProducto,
+           prd_nombreProducto,
+           prd_fechaInicio,
+           prd_fechaTermino,
+           prd_estado,
+           prd_isapempresa,
+           prd_usuarioCreador,
+           prd_valorIndividual,
+           prd_beneficiario
+        )
+        values
+        (
+            nuevaSecuencia(1), codproducto, nombre, fechaInicio, null, 'V', isapre, usuarioCreador, valor, beneficiario
+        );
+        
+        spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'agregarProducto', 'AGREGAR', TO_CHAR(codproducto));
+        
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'agregarProducto', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN DUP_VAL_ON_INDEX THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'La ID del producto ingresada ya esta en uso';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'agregarProducto', 'DUP_VAL_ON_INDEX', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN VALUE_ERROR THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+                oMSG_ERROR := 'Los valores ingresados no cumplen con los requisitos específicos.';
+                spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'agregarProducto', 'VALUE_ERROR', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'agregarProducto', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+                
+    end agregarProducto;
+    
+    PROCEDURE editarProducto(codproducto IN number, isapre IN varchar2, nombre IN varchar2, estado IN varchar2, valor IN number, beneficiario IN varchar2, confirmacion IN number, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2)
+    as
+    begin
+        oCOD_ERROR := '0';
+		oMSG_ERROR := 'OK';
+        
+        
+        IF estado = 'V' THEN
+           UPDATE productos_1click
+            SET prd_nombreproducto = nombre,
+                prd_estado = estado,
+                prd_valorindividual = valor,
+                prd_fechatermino = null,
+                prd_beneficiario = beneficiario
+            WHERE prd_codproducto = codproducto
+            and prd_isapempresa = isapre;
+        ELSE
+            UPDATE productos_1click
+            SET prd_nombreproducto = nombre,
+                prd_estado = estado,
+                prd_valorindividual = valor,
+                prd_fechatermino = trunc(sysdate),
+                prd_beneficiario = beneficiario
+            WHERE prd_codproducto = codproducto
+            and prd_isapempresa = isapre;
+        END IF;
+        
+        IF confirmacion = 1 THEN
+            
+            UPDATE web_productos_1clik
+            SET WP1C_PRECIO = valor
+            WHERE WP1C_PRODUCTO = codproducto
+            AND ISAP_CEMPRESA = isapre
+            AND wp1c_compro != 1;
+            
+            spLog_INS(null, 'MWEB', 'WEB_PRODUCTOS_1CLIK', 'editarValorProducto', 'ACTUALIZAR', TO_CHAR(codproducto));    
+        END IF;
+        
+        
+        spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'editarProducto', 'ACTUALIZAR', TO_CHAR(codproducto));
+        
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'editarProducto', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN DUP_VAL_ON_INDEX THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'La ID del producto no está disponible';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'editarProducto', 'DUP_VAL_ON_INDEX', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN VALUE_ERROR THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+                oMSG_ERROR := 'Los valores ingresados no cumplen con los requisitos específicos.';
+                spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'editarProducto', 'VALUE_ERROR', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'editarProducto', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+        
+    end editarProducto;
+    
+    PROCEDURE activarEstado(afilrut IN varchar2, codProducto IN number, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2)
+    as
+    begin
+        oCOD_ERROR := '0';
+		oMSG_ERROR := 'OK';
+        
+        UPDATE web_productos_1clik
+        SET WP1C_compro = 0,
+            WP1C_MARCAVISTO = 0
+        where afil_nrut = afilrut and wp1c_producto = codProducto;
+        
+        spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'activarEstado', 'ACTIVAR', TO_CHAR(codproducto));
+        
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'activarEstado', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN VALUE_ERROR THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+                oMSG_ERROR := 'Los valores ingresados no cumplen con los requisitos específicos.';
+                spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'activarEstado', 'VALUE_ERROR', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'activarEstado', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+    end activarEstado;
+    
+    PROCEDURE terminarVigencia(codproducto IN number, isapre IN varchar2, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2)
+    as
+    begin
+        oCOD_ERROR := '0';
+		oMSG_ERROR := 'OK';
+        
+        UPDATE productos_1click
+        SET prd_fechatermino = trunc(sysdate),
+            prd_estado = 'E'
+        where PRD_CODPRODUCTO = codproducto and prd_isapempresa = isapre;
+        
+        spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'terminarVigencia', 'DESACTIVAR', TO_CHAR(codproducto));
+        
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'terminarVigencia', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'terminarVigencia', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+        
+    end terminarVigencia;
+    
+    PROCEDURE listarProductos(isapre IN varchar2, c_productos OUT cursor_productos, oCOD_ERROR OUT varchar2, oMSG_ERROR OUT varchar2)
+    as
+    begin
+        oCOD_ERROR := '0';
+        oMSG_ERROR := 'OK';
+        
+        IF isapre = 'B' THEN
+            OPEN c_productos FOR
+            select prd_codproducto as codigoproducto,
+                   prd_codproducto || ' - ' || prd_nombreproducto || ' - ' || prd_isapempresa as nombreproducto
+            from productos_1click
+            where prd_isapempresa = 'B';
+        ELSE
+            OPEN c_productos FOR
+            select prd_codproducto as codigoproducto,
+                   prd_codproducto || ' - ' || prd_nombreproducto || ' - ' || prd_isapempresa as nombreproducto
+            from productos_1click
+            where prd_isapempresa = 'T';
+        END IF;
+        
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'listarProductos', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'listarProductos', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+        
+    end listarProductos;
+    
+    PROCEDURE cambiarProducto(codprodold IN number, codprodnew IN number, isapre IN varchar2, oCOD_ERROR OUT VARCHAR2, oMSG_ERROR OUT VARCHAR2)
+    as
+    begin
+        oCOD_ERROR := '0';
+        oMSG_ERROR := 'OK';
+                
+        UPDATE web_productos_1clik
+        SET wp1c_producto = codprodnew
+        where wp1c_producto = codprodold
+        and isap_cempresa = isapre
+        and wp1c_compro != 1;
+        
+        spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'cambiarProducto', 'ACTUALIZAR', 'Cod old: ' || codprodold || ' - Cod new: ' || codprodnew);
+        
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := 'No se encontró la información solicitada';
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'cambiarProducto', 'NO_DATA_FOUND', oCOD_ERROR || ' ' || oMSG_ERROR);
+            WHEN OTHERS THEN
+                oCOD_ERROR := TO_CHAR(SQLCODE);
+				oMSG_ERROR := SQLERRM;
+				spLog_INS(null, 'MWEB', 'PRODUCTOS1C', 'cambiarProducto', 'OTHERS', oCOD_ERROR || ' ' || oMSG_ERROR);
+        
+    end cambiarProducto;
+
+END PKG_MANTENEDOR_1CLICK;

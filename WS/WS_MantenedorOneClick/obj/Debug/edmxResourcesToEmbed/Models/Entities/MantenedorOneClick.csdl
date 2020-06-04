@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MantenedorOneClickModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="MantenedorOneClickEntities" annotation:LazyLoadingEnabled="true">
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_ACTIVARESTADO">
+      <Parameter Name="AFILRUT" Mode="In" Type="String" />
+      <Parameter Name="CODPRODUCTO" Mode="In" Type="Decimal" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_TERMINARVIGENCIA">
+      <Parameter Name="CODPRODUCTO" Mode="In" Type="Decimal" />
+      <Parameter Name="ISAPRE" Mode="In" Type="String" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_AGREGARPRODUCTO">
+      <Parameter Name="CODPRODUCTO" Mode="In" Type="Decimal" />
+      <Parameter Name="NOMBRE" Mode="In" Type="String" />
+      <Parameter Name="FECHAINICIO" Mode="In" Type="DateTime" />
+      <Parameter Name="ISAPRE" Mode="In" Type="String" />
+      <Parameter Name="USUARIOCREADOR" Mode="In" Type="String" />
+      <Parameter Name="VALOR" Mode="In" Type="Decimal" />
+      <Parameter Name="BENEFICIARIO" Mode="In" Type="String" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOS" ReturnType="Collection(MantenedorOneClickModel.BuscarProductoEntity)">
+      <Parameter Name="AFILRUT" Mode="In" Type="String" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOCOD" ReturnType="Collection(MantenedorOneClickModel.BuscarProductoCodEntity)">
+      <Parameter Name="CODPRODUCTO" Mode="In" Type="Decimal" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_EDITARPRODUCTO">
+      <Parameter Name="CODPRODUCTO" Mode="In" Type="Decimal" />
+      <Parameter Name="ISAPRE" Mode="In" Type="String" />
+      <Parameter Name="NOMBRE" Mode="In" Type="String" />
+      <Parameter Name="ESTADO" Mode="In" Type="String" />
+      <Parameter Name="VALOR" Mode="In" Type="Decimal" />
+      <Parameter Name="BENEFICIARIO" Mode="In" Type="String" />
+      <Parameter Name="CONFIRMACION" Mode="In" Type="Decimal" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_LISTARPRODUCTOS" ReturnType="Collection(MantenedorOneClickModel.ListarProductoEntity)">
+      <Parameter Name="ISAPRE" Mode="In" Type="String" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="PKG_MANTENEDOR_1CLICK_CAMBIARPRODUCTO">
+      <Parameter Name="CODPRODOLD" Mode="In" Type="Decimal" />
+      <Parameter Name="CODPRODNEW" Mode="In" Type="Decimal" />
+      <Parameter Name="ISAPRE" Mode="In" Type="String" />
+      <Parameter Name="OCOD_ERROR" Mode="Out" Type="String" />
+      <Parameter Name="OMSG_ERROR" Mode="Out" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="BuscarProductoEntity">
+    <Property Type="Decimal" Name="RUTAFILIADO" Nullable="false" />
+    <Property Type="String" Name="NOMBREAFILIADO" Nullable="true" />
+    <Property Type="String" Name="ISAPRE" Nullable="false" />
+    <Property Type="String" Name="CODIGOPRODUCTO" Nullable="false" />
+    <Property Type="String" Name="ESTADO" Nullable="true" />
+    <Property Type="Decimal" Name="FOLIO" Nullable="true" />
+    <Property Type="DateTime" Name="FECHACOMPRA" Nullable="true" />
+    <Property Type="Decimal" Name="CARGAS" Nullable="true" />
+    <Property Type="Decimal" Name="VISUALIZACIONES" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="BuscarProductoCodEntity">
+    <Property Type="Decimal" Name="IDPRODUCTO" Nullable="false" />
+    <Property Type="String" Name="CODPRODUCTO" Nullable="false" />
+    <Property Type="String" Name="NOMBREPRODUCTO" Nullable="false" />
+    <Property Type="DateTime" Name="FECHAINICIO" Nullable="false" />
+    <Property Type="DateTime" Name="FECHATERMINO" Nullable="true" />
+    <Property Type="String" Name="ESTADO" Nullable="false" />
+    <Property Type="String" Name="ISAPRE" Nullable="false" />
+    <Property Type="String" Name="USUARIOCREADOR" Nullable="false" />
+    <Property Type="Decimal" Name="VALOR" Nullable="false" />
+    <Property Type="String" Name="BENEFICIARIO" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="ListarProductoEntity">
+    <Property Type="String" Name="CODIGOPRODUCTO" Nullable="false" />
+    <Property Type="String" Name="NOMBREPRODUCTO" Nullable="true" />
+  </ComplexType>
+</Schema>

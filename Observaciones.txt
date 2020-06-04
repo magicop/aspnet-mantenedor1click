@@ -1,0 +1,13 @@
+Usuario BDD:
+mantenedoresweb
+
+Tablas utilizadas:
+PRODUCTOS_1CLICK
+LOG_MANTENEDORES_WEB
+
+Utilización de vistas:
+--
+
+Sinónimos:
+WEB_PRODUCTOS_1CLIK
+AFILIADOS

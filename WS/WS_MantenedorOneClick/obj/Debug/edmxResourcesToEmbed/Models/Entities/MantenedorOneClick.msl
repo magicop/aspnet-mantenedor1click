@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MantenedorOneClickModelStoreContainer" CdmEntityContainer="MantenedorOneClickEntities">
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_ACTIVARESTADO" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_ACTIVARESTADO" />
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_TERMINARVIGENCIA" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_TERMINARVIGENCIA" />
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_AGREGARPRODUCTO" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_AGREGARPRODUCTO" />
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOS" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOS">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MantenedorOneClickModel.BuscarProductoEntity">
+          <ScalarProperty Name="RUTAFILIADO" ColumnName="RUTAFILIADO" />
+          <ScalarProperty Name="NOMBREAFILIADO" ColumnName="NOMBREAFILIADO" />
+          <ScalarProperty Name="ISAPRE" ColumnName="ISAPRE" />
+          <ScalarProperty Name="CODIGOPRODUCTO" ColumnName="CODIGOPRODUCTO" />
+          <ScalarProperty Name="ESTADO" ColumnName="ESTADO" />
+          <ScalarProperty Name="FOLIO" ColumnName="FOLIO" />
+          <ScalarProperty Name="FECHACOMPRA" ColumnName="FECHACOMPRA" />
+          <ScalarProperty Name="CARGAS" ColumnName="CARGAS" />
+          <ScalarProperty Name="VISUALIZACIONES" ColumnName="VISUALIZACIONES" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOCOD" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_BUSCARPRODUCTOCOD">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MantenedorOneClickModel.BuscarProductoCodEntity">
+          <ScalarProperty Name="IDPRODUCTO" ColumnName="IDPRODUCTO" />
+          <ScalarProperty Name="CODPRODUCTO" ColumnName="CODPRODUCTO" />
+          <ScalarProperty Name="NOMBREPRODUCTO" ColumnName="NOMBREPRODUCTO" />
+          <ScalarProperty Name="FECHAINICIO" ColumnName="FECHAINICIO" />
+          <ScalarProperty Name="FECHATERMINO" ColumnName="FECHATERMINO" />
+          <ScalarProperty Name="ESTADO" ColumnName="ESTADO" />
+          <ScalarProperty Name="ISAPRE" ColumnName="ISAPRE" />
+          <ScalarProperty Name="USUARIOCREADOR" ColumnName="USUARIOCREADOR" />
+          <ScalarProperty Name="VALOR" ColumnName="VALOR" />
+          <ScalarProperty Name="BENEFICIARIO" ColumnName="BENEFICIARIO" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_EDITARPRODUCTO" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_EDITARPRODUCTO" />
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_LISTARPRODUCTOS" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_LISTARPRODUCTOS">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MantenedorOneClickModel.ListarProductoEntity">
+          <ScalarProperty Name="CODIGOPRODUCTO" ColumnName="CODIGOPRODUCTO" />
+          <ScalarProperty Name="NOMBREPRODUCTO" ColumnName="NOMBREPRODUCTO" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="PKG_MANTENEDOR_1CLICK_CAMBIARPRODUCTO" FunctionName="MantenedorOneClickModel.Store.PKG_MANTENEDOR_1CLICK_CAMBIARPRODUCTO" />
+  </EntityContainerMapping>
+</Mapping>

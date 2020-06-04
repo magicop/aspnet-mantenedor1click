@@ -1,0 +1,48 @@
+﻿@model WebMantenedorOneClick.Models.DTO.ListaProducto
+
+
+
+<div class="container">
+
+    <center><h1>Cambiar Producto</h1></center>
+    <br>
+
+    @using (Html.BeginForm("CambiarProd", "Producto", FormMethod.Post, new { id = "FormCambiarProducto", name = "FormCambiarProducto" }))
+    {
+        <div class="form-row">
+
+            <div class="form-group col-md-6">
+                <label>Isapre</label>
+                @Html.DropDownListFor(model => model.isapre,
+                   new SelectList(Model.LstIsapres, "Value", "Text"), "Selecciona la isapre",
+                   new { @class = "form-control" })
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Producto</label>
+                @Html.DropDownListFor(model => model.codigoProductoOld,
+                   new SelectList(Model.LstProductos, "Value", "Text"), "Selecciona el producto",
+                   new { @class = "form-control" })
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Nuevo Producto</label>
+                @Html.DropDownListFor(model => model.codigoProductoNew,
+                   new SelectList(Model.LstProductos, "Value", "Text"), "Selecciona el nuevo producto",
+                   new { @class = "form-control" })
+            </div>
+
+        </div>
+
+        <center>
+            <br>
+
+            <button type="submit" class="btn btn-outline-danger btn-lg" id="btnCambiar" name="btnCambiar" onclick="comprobarCodigos()">Cambiar</button>
+
+            <button type="reset" class="btn btn-outline-danger btn-lg" onclick="limpiarFormulario()" value="Limpiar">Limpiar</button>
+
+        </center>
+    }
+
+
+</div>

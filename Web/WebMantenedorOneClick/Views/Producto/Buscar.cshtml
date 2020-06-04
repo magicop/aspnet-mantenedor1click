@@ -1,0 +1,134 @@
+﻿@model List<WebMantenedorOneClick.Models.DTO.ProductoOc>
+
+<center>
+    <h4 style="color:red;">@ViewBag.Ok</h4>
+    <h4 style="color:red;">@ViewBag.Edit</h4>
+    <br />
+</center>
+<br />
+
+@if(ViewBag.Ok != "El código de producto ha sido actualizado correctamente")
+{ 
+    <center><h1>Listado de Productos</h1></center>
+    <br />
+
+    if (Model.Count() > 0)
+
+    {
+        <table id="TblSolicitudes" class="table display nowrap table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Código</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Fecha inicio</th>
+                    <th scope="col">Fecha termino</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Isapre</th>
+                    <th scope="col">Usuario creador</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Beneficiario</th>
+                    <th scope="col">*</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var producto in Model)
+                {
+                    <tr>
+                        <td><strong>@producto.id</strong></td>
+                        <td>@producto.codigo</td>
+                        <td>@producto.nombre</td>
+                        <td>@producto.fechaInicio.ToShortDateString()</td>
+
+                        @if(@producto.fechaTermino.ToShortDateString() == "01-01-0001")
+                        {
+                            <td>Sin fecha de término</td>
+                        }
+                        else
+                        {
+                            <td>@producto.fechaTermino.ToShortDateString()</td>
+                        }
+
+                        @if (@producto.estado == "V")
+                        {
+                            <td>Vigente</td>
+                        }
+                        else
+                        {
+                            <td>No vigente</td>
+                        }
+                        
+
+                        @if (@producto.isapre == "B")
+                        {
+                            <td>Banmédica</td>
+                        }
+                        else
+                        {
+                            <td>Vida Tres</td>
+                        }
+
+                        <td>@producto.usuarioCreador</td>
+                        <td>@producto.valor</td>
+
+                        @if (@producto.beneficiario == "S")
+                        {
+                            <td>Selecciona cargas</td>
+                        }
+                        else
+                        {
+                            <td>Todas las cargas</td>
+                        }
+
+                        <td>
+                            <a href="@Url.Action("FormEditar", "Producto", new { codproducto = @producto.codigo, isapre = @producto.isapre, nombre = @producto.nombre, estado = @producto.estado, valor = @producto.valor, beneficiario = @producto.beneficiario })">
+                                <i class="far fa-edit" data-toggle="tooltip" data-placement="top" title="Editar"></i>
+                            </a>
+                            @if (@producto.estado == "V")
+                            {
+                                <a href="@Url.Action("TerminarVigencia", "Producto", new { codproducto = @producto.codigo, isapre = @producto.isapre })">
+                                    <i class="fas fa-trash-restore-alt" data-toggle="tooltip" data-placement="top" title="Terminar vigencia"></i>
+                                </a>
+                            }
+                            
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        <br />
+        <br />
+        <center>
+            <a href="@Url.Action("FormAgregar", "Producto") ">
+                <i class="btn btn-outline-danger btn-lg" value="Volver al menú" style="font-style: normal;">Agregar producto</i>
+            </a>
+            <a href="@Url.Action("Index", "Home") ">
+                <i class="btn btn-outline-danger btn-lg" value="Volver al menú" style="font-style: normal;">Volver al menú principal</i>
+            </a>
+        </center>
+    }
+    else
+    {
+        <center>
+            <h4 style="color:red;">No se han encontrado productos asociados.</h4>
+
+            <br />
+
+            <a href="@Url.Action("Index", "Home")">
+                <i class="btn btn-outline-danger btn-lg" value="Volver al menú" style="font-style:normal;">Volver al menú principal</i>
+            </a>
+        </center>
+    }
+
+}
+else
+{
+    <center>
+        <a href="@Url.Action("Index", "Home")">
+            <i class="btn btn-outline-danger btn-lg" value="Volver al menú" style="font-style:normal;">Volver al menú principal</i>
+        </a>
+    </center>
+}
